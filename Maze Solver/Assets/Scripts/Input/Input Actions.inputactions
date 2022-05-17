@@ -2,7 +2,7 @@
     "name": "Input Actions",
     "maps": [
         {
-            "name": "Character control",
+            "name": "Player",
             "id": "626399d6-4524-4846-90b7-24774ea21d73",
             "actions": [
                 {
@@ -10,6 +10,14 @@
                     "type": "Value",
                     "id": "af1d6b52-085e-4097-b2c6-96ac2fe14582",
                     "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "ce955ec7-e00d-422d-9acb-ba0c663b479b",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 }
@@ -80,6 +88,28 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "bd532280-01fc-437b-8d2b-788180d43553",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14786948-ec30-4699-86b9-d523c152f6e9",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
