@@ -9,9 +9,12 @@ public class StateMoving : IMovementState
     private IMovementFSM _movementFSM;
     private IMovementStateFactory _factory;
     private Vector2 _inputDirection;
+    private Vector3 _currentVelocity;
     private float _movingSpeed;
+    private float _jumpForce = 10f;
+    private bool _jumpCommand = false;
 
-    private readonly float _gravityConstant = -0.05f;
+    private readonly float _gravityConstant = -0.5f;
 
     public StateMoving(IMovementFSM stateMachine, IMovementStateFactory factory, CharacterController characterController, float movingSpeed)
     {
@@ -20,9 +23,10 @@ public class StateMoving : IMovementState
         _characterController = characterController;
         _movingSpeed = movingSpeed;
     }
-    public void Init()
+    public void Init(Vector3 velocity)
     {
-        
+        _currentVelocity = velocity;
+        Debug.Log(this.ToString());
     }
 
     public void HandleMovement(InputAction.CallbackContext context)
@@ -32,43 +36,50 @@ public class StateMoving : IMovementState
 
     public void HandleJump(InputAction.CallbackContext context)
     {
-        bool jumpCommand = context.ReadValueAsButton();
-        
-        if (!jumpCommand || !_characterController.isGrounded)
-        {
-            return;
-        }
-
-        var nextState = _factory.Create<StateJump>();
-        nextState.Init();
-
-        _movementFSM.ChangeState(nextState);
+        _jumpCommand = context.ReadValueAsButton();
     }
 
-    public void ChangeState(IMovementState newState)
+    public void ChangeState(IMovementState nextState)
     {
-        
+        nextState.Init(_currentVelocity);
+        _movementFSM.ChangeState(nextState);
     }
 
     public void Move()
     {
-        var intputMove = CalculateMoveFromInput();
-        var gravityMove = CalculateMoveFromGravity();
-
-        _characterController.Move(intputMove + gravityMove);
+        _currentVelocity = CalculateMoveInput(_currentVelocity, _inputDirection);
+        _characterController.Move(_currentVelocity * Time.deltaTime);
+        _currentVelocity = CalculateMoveGravity(_currentVelocity, _gravityConstant);
+        _currentVelocity = CalculateMoveJump(_currentVelocity );
     }
 
-    private Vector3 CalculateMoveFromInput()
+    private Vector3 CalculateMoveInput(Vector3 currentVelocity, Vector2 inputDirection)
     {
-        return new Vector3(_inputDirection.x, 0, _inputDirection.y).normalized 
-            * _movingSpeed 
-            * Time.deltaTime;
+        currentVelocity.x = inputDirection.x * _movingSpeed;
+        currentVelocity.z = inputDirection.y * _movingSpeed;
+        return currentVelocity;
     }
 
-    private Vector3 CalculateMoveFromGravity()
+    private Vector3 CalculateMoveGravity(Vector3 currentVelocity, float gravityConstant)
     {
-        return new Vector3(0, _gravityConstant, 0) * Time.deltaTime;
+        currentVelocity.y = gravityConstant;
+        return currentVelocity;
     }
 
+    private Vector3 CalculateMoveJump(Vector3 currentVelocity)
+    {
+        if (!_jumpCommand || !_characterController.isGrounded)
+        {
+            return currentVelocity;
+        }
+
+        currentVelocity.y = _jumpForce;
+        _currentVelocity = currentVelocity;
+
+        var nextState = _factory.Create<StateJump>();
+        ChangeState(nextState);
+
+        return currentVelocity;
+    }
     
 }

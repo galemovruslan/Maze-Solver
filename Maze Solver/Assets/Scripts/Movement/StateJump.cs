@@ -8,14 +8,21 @@ public class StateJump : IMovementState
 {
     private IMovementFSM _movementFSM;
     private IMovementStateFactory _factory;
-    private Vector3 _velocity;
+    private Vector3 _currentVelocity;
     CharacterController _characterController;
+    private Vector2 _inputDirection;
 
+    private bool _wasGroundedLastFrame = true;
     private bool _jumpCommand;
-    private bool _jumpAllowed = true;
+    private bool _jumpAllowed = false;
     private bool _jumpThisFrame = false;
+    private bool _isFalling = false;
+
     private float _jumpForce;
+    private float _moveSpeed = 1f;
+
     private readonly float _gravityConstant = -9.8f;
+    private readonly float _fallAcceleration = 2f;
 
     public StateJump(IMovementFSM stateMachine, IMovementStateFactory factory, CharacterController characterController, float jumpHeight)
     {
@@ -25,14 +32,15 @@ public class StateJump : IMovementState
         _jumpForce = jumpHeight;
     }
 
-    public void Init()
+    public void Init(Vector3 velocity)
     {
-        
+        _currentVelocity = velocity;
+        Debug.Log(this.ToString());
     }
 
     public void HandleMovement(InputAction.CallbackContext context)
     {
-
+        _inputDirection = context.ReadValue<Vector2>();
     }
 
     public void HandleJump(InputAction.CallbackContext context)
@@ -43,51 +51,70 @@ public class StateJump : IMovementState
 
     public void Move()
     {
-        if (_characterController.isGrounded)
-        {
-            HandleGrounging();
-        }
+        _isFalling = !_characterController.isGrounded && _currentVelocity.y < 0;
+
+        HandleGrounging(
+            isGrounded: _characterController.isGrounded,
+            isMoveDown: _currentVelocity.y < 0);
+
         HandleMovement(_characterController);
+
+        _wasGroundedLastFrame = _characterController.isGrounded;
     }
 
     private void HandleMovement(CharacterController characterController)
     {
-        var intputMove = CalculateMoveFromInput();
-        var gravityMove = CalculateMoveFromGravity();
+        _currentVelocity = CalculateMoveInput(_currentVelocity, _inputDirection);
+        characterController.Move(_currentVelocity * Time.deltaTime);
+        _currentVelocity = CalculateMoveGravity(_currentVelocity, _gravityConstant);
+        _currentVelocity = CalculateMoveJump(_currentVelocity, _jumpCommand, _jumpForce);
+    }
 
-        Vector3 totalVelocity;
-        bool jumpThisFrame = _jumpAllowed && _jumpCommand;
+    private Vector3 CalculateMoveJump(Vector3 currentVelocity, bool jumpCommand, float jumpForce)
+    {
+        bool jumpThisFrame = _jumpAllowed && jumpCommand;
 
         if (jumpThisFrame)
         {
-            _velocity.y = 0;
-            totalVelocity = _velocity + intputMove;
+            currentVelocity.y = jumpForce;
+        }
+        return currentVelocity;
+    }
+
+    private Vector3 CalculateMoveInput(Vector3 currentVelocity, Vector2 inputDirection)
+    {
+        currentVelocity.x = inputDirection.x * _moveSpeed;
+        currentVelocity.z = inputDirection.y * _moveSpeed;
+        return currentVelocity;
+    }
+
+    private Vector3 CalculateMoveGravity(Vector3 currentVelocity, float gravityConstant)
+    {
+        if (_characterController.isGrounded)
+        {
+            currentVelocity.y = gravityConstant;
         }
         else
         {
-            totalVelocity = _velocity + gravityMove;
+            currentVelocity.y += gravityConstant * Time.deltaTime;
+        }
+        return currentVelocity;
+    }
+
+    private void HandleGrounging(bool isGrounded, bool isMoveDown)
+    {
+        if (!isGrounded || !isMoveDown)
+        {
+            return;
         }
 
-        characterController.Move(totalVelocity);
-        _velocity = totalVelocity;
-        Debug.Log("Jump velocity" + _velocity.ToString());
-    }
-
-    private Vector3 CalculateMoveFromInput()
-    {
-        float jumpForce = _jumpCommand ? _jumpForce : 0;
-        return new Vector3(0, jumpForce, 0) * Time.deltaTime;
-    }
-    private Vector3 CalculateMoveFromGravity()
-    {
-        return new Vector3(0, _gravityConstant, 0) * Time.deltaTime;
-    }
-
-    private void HandleGrounging()
-    {
         var nextState = _factory.Create<StateMoving>();
-        nextState.Init();
+        ChangeState(nextState);
+    }
 
+    private void ChangeState(IMovementState nextState)
+    {
+        nextState.Init(_currentVelocity);
         _movementFSM.ChangeState(nextState);
     }
 

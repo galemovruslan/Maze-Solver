@@ -19,7 +19,7 @@ public class MovementFactoryImpl : IMovementStateFactory
         var moveState = new StateMoving(stateMachine, this, characterController, 2f);
         RouteInput(moveState, _inputActions);
 
-        var jumpState = new StateJump(stateMachine, this, characterController, 5f );
+        var jumpState = new StateJump(stateMachine, this, characterController, 100f );
         RouteInput(jumpState, _inputActions);
 
         _map.Add(typeof(StateMoving), moveState);
@@ -36,7 +36,6 @@ public class MovementFactoryImpl : IMovementStateFactory
 
     public IMovementState Create<T>() where T : IMovementState
     {
-        Debug.Log("Creating: " + typeof(T).Name);
         return _map[typeof(T)];
     }
 }

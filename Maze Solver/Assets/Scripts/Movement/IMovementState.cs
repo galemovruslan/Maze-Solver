@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public interface IMovementState 
 {
-    void Init();
+    void Init(Vector3 velocity);
 
     void Move();
 
