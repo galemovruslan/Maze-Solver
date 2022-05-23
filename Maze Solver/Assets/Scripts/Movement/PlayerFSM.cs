@@ -1,17 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerFSM : IMovementFSM
 {
-    private IMovementState _currentState;
-    private CharacterController _characterController;
+    public event Action<string> OnStateChange;
 
+    private IMovementState _currentState;
     private bool _initialized = false;
 
-    public PlayerFSM(CharacterController characterController)
-    {
-        _characterController = characterController;   
+    public PlayerFSM()
+    { 
     }
 
     public void Init(IMovementState firstState)
@@ -24,6 +24,8 @@ public class PlayerFSM : IMovementFSM
     {
         CheckInitialized();
         _currentState = newState;
+        string stateName = _currentState.StateName;
+        OnStateChange?.Invoke(stateName);
     }
 
     public void Tick()

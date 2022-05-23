@@ -6,10 +6,13 @@ using UnityEngine.InputSystem;
 
 public class StateJump : IMovementState
 {
+    public string StateName => MovementNames.JumpName;
+
     private IMovementFSM _movementFSM;
     private IMovementStateFactory _factory;
     private Vector3 _currentVelocity;
-    CharacterController _characterController;
+    private Vector3 _initialVelocity;
+    private ICharacterMover _characterController;
     private Vector2 _inputDirection;
 
     private bool _wasGroundedLastFrame = true;
@@ -18,23 +21,28 @@ public class StateJump : IMovementState
     private bool _jumpThisFrame = false;
     private bool _isFalling = false;
 
-    private float _jumpForce;
     private float _moveSpeed = 1f;
+    private float _gravity = -9.8f;
+    private float _jumpHeight;
+    private float _jumpDuration;
+    private float _jumpForce;
 
-    private readonly float _gravityConstant = -9.8f;
-    private readonly float _fallAcceleration = 2f;
+    private readonly float _fallGravityMultiplyer = 2f;
 
-    public StateJump(IMovementFSM stateMachine, IMovementStateFactory factory, CharacterController characterController, float jumpHeight)
+    public StateJump(IMovementFSM stateMachine, IMovementStateFactory factory, ICharacterMover characterController, float jumpHeight, float jumpDuration)
     {
         _movementFSM = stateMachine;
         _factory = factory;
         _characterController = characterController;
-        _jumpForce = jumpHeight;
+        _jumpHeight = jumpHeight;
+        _jumpDuration = jumpDuration;
+        SetupJumpValues();
     }
 
     public void Init(Vector3 velocity)
     {
         _currentVelocity = velocity;
+        _initialVelocity = velocity;
         Debug.Log(this.ToString());
     }
 
@@ -48,11 +56,12 @@ public class StateJump : IMovementState
         _jumpCommand = context.ReadValueAsButton();
     }
 
+    public void HandleSprint(InputAction.CallbackContext context)
+    {
+    }
 
     public void Move()
     {
-        _isFalling = !_characterController.isGrounded && _currentVelocity.y < 0;
-
         HandleGrounging(
             isGrounded: _characterController.isGrounded,
             isMoveDown: _currentVelocity.y < 0);
@@ -62,11 +71,12 @@ public class StateJump : IMovementState
         _wasGroundedLastFrame = _characterController.isGrounded;
     }
 
-    private void HandleMovement(CharacterController characterController)
+    private void HandleMovement(ICharacterMover characterController)
     {
+        _isFalling = !_characterController.isGrounded && _currentVelocity.y < 0;
         _currentVelocity = CalculateMoveInput(_currentVelocity, _inputDirection);
         characterController.Move(_currentVelocity * Time.deltaTime);
-        _currentVelocity = CalculateMoveGravity(_currentVelocity, _gravityConstant);
+        _currentVelocity = CalculateMoveGravity(_currentVelocity, _gravity, _fallGravityMultiplyer, _isFalling);
         _currentVelocity = CalculateMoveJump(_currentVelocity, _jumpCommand, _jumpForce);
     }
 
@@ -83,13 +93,18 @@ public class StateJump : IMovementState
 
     private Vector3 CalculateMoveInput(Vector3 currentVelocity, Vector2 inputDirection)
     {
-        currentVelocity.x = inputDirection.x * _moveSpeed;
-        currentVelocity.z = inputDirection.y * _moveSpeed;
+        currentVelocity.x = _initialVelocity.x + inputDirection.x * _moveSpeed;
+        currentVelocity.z = _initialVelocity.z + inputDirection.y * _moveSpeed;
         return currentVelocity;
     }
 
-    private Vector3 CalculateMoveGravity(Vector3 currentVelocity, float gravityConstant)
+    private Vector3 CalculateMoveGravity(Vector3 currentVelocity, float gravityConstant, float fallMult, bool isFalling)
     {
+        
+        if (isFalling)
+        {
+            gravityConstant *= fallMult;
+        }
         if (_characterController.isGrounded)
         {
             currentVelocity.y = gravityConstant;
@@ -116,6 +131,13 @@ public class StateJump : IMovementState
     {
         nextState.Init(_currentVelocity);
         _movementFSM.ChangeState(nextState);
+    }
+
+    private void SetupJumpValues()
+    {
+        float timeToApex = _jumpDuration / 2f;
+        _gravity = -(2 * _jumpHeight) / Mathf.Pow(timeToApex, 2);
+        _jumpForce = (2 * _jumpHeight) / timeToApex;
     }
 
 }

@@ -7,19 +7,21 @@ public class MovementFactoryImpl : IMovementStateFactory
 {
     private InputActions _inputActions;
     private Dictionary<Type, IMovementState> _map = new Dictionary<Type, IMovementState>();
+    private MoveParameters _moveParameters;
 
-    public MovementFactoryImpl(InputActions inputActions, IMovementFSM stateMachine, CharacterController characterController)
+    public MovementFactoryImpl(InputActions inputActions, IMovementFSM stateMachine, ICharacterMover characterController, MoveParameters moveParameters)
     {
         _inputActions = inputActions;
+        _moveParameters = moveParameters;
         PopulateMap(stateMachine, characterController);
     }
 
-    private void PopulateMap(IMovementFSM stateMachine, CharacterController characterController)
+    private void PopulateMap(IMovementFSM stateMachine, ICharacterMover characterController)
     {
-        var moveState = new StateMoving(stateMachine, this, characterController, 2f);
+        var moveState = new StateMoving(stateMachine, this, characterController, _moveParameters.MoveSpeed, _moveParameters.SprintSpeed, _moveParameters.JumpHeight, _moveParameters.JumpTime);
         RouteInput(moveState, _inputActions);
 
-        var jumpState = new StateJump(stateMachine, this, characterController, 100f );
+        var jumpState = new StateJump(stateMachine, this, characterController, _moveParameters.JumpHeight, _moveParameters.JumpTime);
         RouteInput(jumpState, _inputActions);
 
         _map.Add(typeof(StateMoving), moveState);
@@ -32,6 +34,8 @@ public class MovementFactoryImpl : IMovementStateFactory
         inputActions.Player.Movement.canceled += state.HandleMovement;
         inputActions.Player.Jump.performed += state.HandleJump;
         inputActions.Player.Jump.canceled += state.HandleJump;
+        inputActions.Player.Sprint.performed += state.HandleSprint;
+        inputActions.Player.Sprint.canceled += state.HandleSprint;
     }
 
     public IMovementState Create<T>() where T : IMovementState

@@ -10,21 +10,35 @@ public class AnimationPlayer
 
     private Animator _controller;
     private Dictionary<string, int> _triggersMap;
+    private ICharacterMover _characterMover;
+    private int _speedHash;
 
     private readonly string _runTriggerName = "Run";
     private readonly string _jumpTriggerName = "Jump";
+    private readonly string _speedFloatName = "Speed";
 
-    public AnimationPlayer(Animator controller)
+    public AnimationPlayer(Animator controller, ICharacterMover characterMover)
     {
+        _characterMover = characterMover;
         _controller = controller;
-
         _triggersMap = new Dictionary<string, int>();
-        _triggersMap.Add(_runTriggerName, Animator.StringToHash(_runTriggerName));
-        _triggersMap.Add(_jumpTriggerName, Animator.StringToHash(_jumpTriggerName));
+        _triggersMap.Add(MovementNames.MoveName, Animator.StringToHash(_runTriggerName));
+        _triggersMap.Add(MovementNames.JumpName, Animator.StringToHash(_jumpTriggerName));
+        _speedHash = Animator.StringToHash(_speedFloatName);
     }
 
     public void MakeTransition(string stateName)
     {
         _controller.SetTrigger(_triggersMap[stateName]);
     }
+
+    public void Update()
+    {
+        Vector3 velocity = _characterMover.Velocity;
+        Vector2 planarVelocity = new Vector2(velocity.x, velocity.z);
+        float speed = planarVelocity.magnitude;
+        _controller.SetFloat(_speedHash, speed);
+    }
+
+
 }
