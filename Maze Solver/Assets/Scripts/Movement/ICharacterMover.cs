@@ -7,6 +7,8 @@ public interface ICharacterMover
     bool isGrounded { get; }
     Vector3 Velocity { get; }
 
+    bool IsTouchingWall();
+
     void Move(Vector3 velocity);
 
     

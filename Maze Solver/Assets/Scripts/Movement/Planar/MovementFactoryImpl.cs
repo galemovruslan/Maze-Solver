@@ -5,40 +5,49 @@ using UnityEngine;
 
 public class MovementFactoryImpl : IMovementStateFactory
 {
-    private InputActions _inputActions;
-    private Dictionary<Type, IMovementState> _map = new Dictionary<Type, IMovementState>();
-    private MoveParameters _moveParameters;
+    protected InputActions _inputActions;
+    protected Dictionary<Type, IMovementState> _map = new Dictionary<Type, IMovementState>();
+    protected MoveParameters _moveParameters;
 
-    public MovementFactoryImpl(InputActions inputActions, IMovementFSM stateMachine, ICharacterMover characterController, MoveParameters moveParameters)
+    public MovementFactoryImpl(FactoryParameters parameters)
     {
-        _inputActions = inputActions;
-        _moveParameters = moveParameters;
-        PopulateMap(stateMachine, characterController);
+        _inputActions = parameters.inputActions;
+        _moveParameters = parameters.moveParameters;
+        PopulateMap(parameters.stateMachine, parameters.characterController);
     }
     public IMovementState Create<T>() where T : IMovementState
     {
         return _map[typeof(T)];
     }
 
-    private void PopulateMap(IMovementFSM stateMachine, ICharacterMover characterController)
+    protected virtual void PopulateMap(IMovementFSM stateMachine, ICharacterMover characterController)
     {
-        var moveState = new StateMoving(stateMachine, this, characterController, _moveParameters.MoveSpeed, _moveParameters.SprintSpeed, _moveParameters.JumpHeight, _moveParameters.JumpTime);
+        var moveState = new StateMoving(stateMachine, this, characterController, _moveParameters);
         RouteInput(moveState, _inputActions);
 
-        var jumpState = new StateJump(stateMachine, this, characterController, _moveParameters.JumpHeight, _moveParameters.JumpTime);
+        var jumpState = new StateJump(stateMachine, this, characterController, _moveParameters);
         RouteInput(jumpState, _inputActions);
 
         _map.Add(typeof(StateMoving), moveState);
         _map.Add(typeof(StateJump), jumpState);
     }
 
-    private void RouteInput(IMovementState state, InputActions inputActions)
+    protected void RouteInput(IMovementState state, InputActions inputActions)
     {
         inputActions.Player.Movement.performed += state.HandleMovement;
         inputActions.Player.Movement.canceled += state.HandleMovement;
-        inputActions.Player.Jump.performed += state.HandleJump;
+        inputActions.Player.Jump.started += state.HandleJump;
         inputActions.Player.Jump.canceled += state.HandleJump;
         inputActions.Player.Sprint.performed += state.HandleSprint;
         inputActions.Player.Sprint.canceled += state.HandleSprint;
-    }   
+    }
 }
+public struct FactoryParameters
+{
+    public InputActions inputActions;
+    public IMovementFSM stateMachine;
+    public ICharacterMover characterController;
+    public MoveParameters moveParameters;
+
+}
+

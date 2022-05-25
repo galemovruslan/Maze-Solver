@@ -9,35 +9,33 @@ public class StateMoving : IMovementState
 
     private ICharacterMover _characterController;
     private IMovementFSM _movementFSM;
-    private IMovementStateFactory _factory;
-    private Vector2 _inputDirection;
     private Vector3 _currentVelocity;
     private float _movingSpeed;
     private float _runningSpeed;
     private float _sprintingSpeed;
     private float _jumpForce = 10f;
-    private bool _jumpCommand = false;
     private float _jumpHeight;
     private float _jumpDuration;
 
+    protected IMovementStateFactory _factory;
+    protected Vector2 _inputDirection;
+    protected bool _jumpCommand = false;
     private readonly float _gravityConstant = -0.5f;
 
     public StateMoving(IMovementFSM stateMachine, 
         IMovementStateFactory factory, 
-        ICharacterMover characterController, 
-        float runningSpeed, 
-        float sprintingSpeed,
-        float jumpHeight,
-        float jumpDuration)
+        ICharacterMover characterController,
+        MoveParameters parameters )
     {
         _movementFSM = stateMachine;
         _factory = factory;
         _characterController = characterController;
-        _runningSpeed = runningSpeed;
-        _sprintingSpeed = sprintingSpeed;
+        _runningSpeed = parameters.MoveSpeed;
+        _sprintingSpeed = parameters.SprintSpeed;
+        _jumpHeight = parameters.JumpHeight;
+        _jumpDuration = parameters.JumpTime;
+
         _movingSpeed = _runningSpeed;
-        _jumpHeight = jumpHeight;
-        _jumpDuration = jumpDuration;
         SetupJumpValues();
     }
     public void Init(Vector3 velocity)
@@ -46,17 +44,17 @@ public class StateMoving : IMovementState
         Debug.Log(this.ToString());
     }
 
-    public void HandleMovement(InputAction.CallbackContext context)
+    public virtual void HandleMovement(InputAction.CallbackContext context)
     {
         _inputDirection = context.ReadValue<Vector2>();
     }
 
-    public void HandleJump(InputAction.CallbackContext context)
+    public virtual void HandleJump(InputAction.CallbackContext context)
     {
         _jumpCommand = context.ReadValueAsButton();
     }
 
-    public void HandleSprint(InputAction.CallbackContext context)
+    public virtual void HandleSprint(InputAction.CallbackContext context)
     {
         _movingSpeed = context.ReadValueAsButton() ? _sprintingSpeed : _runningSpeed;
     }
@@ -73,6 +71,7 @@ public class StateMoving : IMovementState
         _characterController.Move(_currentVelocity * Time.deltaTime);
         _currentVelocity = CalculateMoveGravity(_currentVelocity, _gravityConstant);
         _currentVelocity = CalculateMoveJump(_currentVelocity );
+        _jumpCommand = false;
     }
 
     private Vector3 CalculateMoveInput(Vector3 currentVelocity, Vector2 inputDirection)
@@ -99,9 +98,8 @@ public class StateMoving : IMovementState
         currentVelocity.y = _jumpForce;
         _currentVelocity = currentVelocity;
 
-        var nextState = _factory.Create<StateJump>();
+        var nextState = GetJumpState();
         ChangeState(nextState);
-
         return currentVelocity;
     }
 
@@ -109,6 +107,11 @@ public class StateMoving : IMovementState
     {
         float timeToApex = _jumpDuration / 2f;
         _jumpForce = (2 * _jumpHeight) / timeToApex;
+    }
+
+    protected virtual IMovementState GetJumpState()
+    {
+        return _factory.Create<StateJump>();
     }
 
 }

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlanarAutoRotateMover : ICharacterMover
 {
+
+    public bool isGrounded => _characterController.isGrounded;
+    public Vector3 Velocity => _characterController.velocity;
+
     private CharacterController _characterController;
     private float _rotationSpeed = .1f;
     private Vector3 _setVelocity = Vector3.forward;
@@ -12,10 +16,6 @@ public class PlanarAutoRotateMover : ICharacterMover
     {
         _characterController = characterController;
     }
-
-    public bool isGrounded => _characterController.isGrounded;
-
-    public Vector3 Velocity => _characterController.velocity;
 
     public void Move(Vector3 velocity)
     {
@@ -39,4 +39,9 @@ public class PlanarAutoRotateMover : ICharacterMover
         return velocity.x == 0 && velocity.z == 0;
     }
 
+    public bool IsTouchingWall()
+    {
+        return _characterController.collisionFlags == CollisionFlags.Sides
+            || _characterController.collisionFlags == CollisionFlags.Below;
+    }
 }
