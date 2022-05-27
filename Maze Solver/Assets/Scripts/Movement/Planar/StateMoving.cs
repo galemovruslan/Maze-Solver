@@ -7,6 +7,7 @@ public class StateMoving : IMovementState
 {
     public string StateName => MovementNames.MoveName;
 
+    private DelayedAction _coyoteJump;
     private ICharacterMover _characterController;
     private IMovementFSM _movementFSM;
     private Vector3 _currentVelocity;
@@ -16,16 +17,18 @@ public class StateMoving : IMovementState
     private float _jumpForce = 10f;
     private float _jumpHeight;
     private float _jumpDuration;
+    private bool _jumpThisFrame = false;
+    private bool _coyoteRunning = true;
 
     protected IMovementStateFactory _factory;
     protected Vector2 _inputDirection;
     protected bool _jumpCommand = false;
     private readonly float _gravityConstant = -0.5f;
 
-    public StateMoving(IMovementFSM stateMachine, 
-        IMovementStateFactory factory, 
+    public StateMoving(IMovementFSM stateMachine,
+        IMovementStateFactory factory,
         ICharacterMover characterController,
-        MoveParameters parameters )
+        MoveParameters parameters)
     {
         _movementFSM = stateMachine;
         _factory = factory;
@@ -37,9 +40,17 @@ public class StateMoving : IMovementState
 
         _movingSpeed = _runningSpeed;
         SetupJumpValues();
+        _coyoteJump = new DelayedAction
+            (() => {
+            _coyoteRunning = false;
+            Debug.Log($"coyote running: {_coyoteRunning}");
+        },
+        1f);
+        
     }
     public void Init(Vector3 velocity)
     {
+        _jumpThisFrame = false;
         _currentVelocity = velocity;
         Debug.Log(this.ToString());
     }
@@ -70,8 +81,9 @@ public class StateMoving : IMovementState
         _currentVelocity = CalculateMoveInput(_currentVelocity, _inputDirection);
         _characterController.Move(_currentVelocity * Time.deltaTime);
         _currentVelocity = CalculateMoveGravity(_currentVelocity, _gravityConstant);
-        _currentVelocity = CalculateMoveJump(_currentVelocity );
+        _currentVelocity = CalculateMoveJump(_currentVelocity);
         _jumpCommand = false;
+        CheckStateChange();
     }
 
     private Vector3 CalculateMoveInput(Vector3 currentVelocity, Vector2 inputDirection)
@@ -90,17 +102,23 @@ public class StateMoving : IMovementState
 
     private Vector3 CalculateMoveJump(Vector3 currentVelocity)
     {
-        if (!_jumpCommand || !_characterController.isGrounded)
+        if (!_jumpCommand || !_coyoteRunning)
         {
             return currentVelocity;
         }
 
         currentVelocity.y = _jumpForce;
-        _currentVelocity = currentVelocity;
-
-        var nextState = GetJumpState();
-        ChangeState(nextState);
+        _jumpThisFrame = true;
         return currentVelocity;
+    }
+
+    private void CheckStateChange()
+    {
+        if (_jumpThisFrame || !_coyoteRunning)
+        {
+            var nextState = GetJumpState();
+            ChangeState(nextState);
+        }
     }
 
     private void SetupJumpValues()
@@ -108,6 +126,7 @@ public class StateMoving : IMovementState
         float timeToApex = _jumpDuration / 2f;
         _jumpForce = (2 * _jumpHeight) / timeToApex;
     }
+
 
     protected virtual IMovementState GetJumpState()
     {

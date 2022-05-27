@@ -6,7 +6,9 @@ using UnityEngine;
 public class Timer
 {
     public bool IsDone => _isDone;
-    public event Action OnDone;
+    public bool IsRunning => _isRunning; 
+
+    public event Action OnDone; 
 
     private float _time;
     private float _setTime;
