@@ -7,7 +7,6 @@ public class StateMoving : IMovementState
 {
     public string StateName => MovementNames.MoveName;
 
-    private DelayedAction _coyoteJump;
     private ICharacterMover _characterController;
     private IMovementFSM _movementFSM;
     private Vector3 _currentVelocity;
@@ -18,7 +17,6 @@ public class StateMoving : IMovementState
     private float _jumpHeight;
     private float _jumpDuration;
     private bool _jumpThisFrame = false;
-    private bool _coyoteRunning = true;
 
     protected IMovementStateFactory _factory;
     protected Vector2 _inputDirection;
@@ -39,14 +37,7 @@ public class StateMoving : IMovementState
         _jumpDuration = parameters.JumpTime;
 
         _movingSpeed = _runningSpeed;
-        SetupJumpValues();
-        _coyoteJump = new DelayedAction
-            (() => {
-            _coyoteRunning = false;
-            Debug.Log($"coyote running: {_coyoteRunning}");
-        },
-        1f);
-        
+        SetupJumpValues();        
     }
     public void Init(Vector3 velocity)
     {
@@ -102,7 +93,7 @@ public class StateMoving : IMovementState
 
     private Vector3 CalculateMoveJump(Vector3 currentVelocity)
     {
-        if (!_jumpCommand || !_coyoteRunning)
+        if (!_jumpCommand )
         {
             return currentVelocity;
         }
@@ -114,7 +105,7 @@ public class StateMoving : IMovementState
 
     private void CheckStateChange()
     {
-        if (_jumpThisFrame || !_coyoteRunning)
+        if (_jumpThisFrame || !_characterController.isGrounded)
         {
             var nextState = GetJumpState();
             ChangeState(nextState);

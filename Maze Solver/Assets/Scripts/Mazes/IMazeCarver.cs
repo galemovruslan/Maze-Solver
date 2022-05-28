@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IMazeCarver
 {
-    
+    void CarveMaze();
 }
