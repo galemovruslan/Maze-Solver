@@ -8,6 +8,7 @@ public class StateJump : IMovementState
 {
     public string StateName => MovementNames.JumpName;
 
+    private Vector3Reference _forward;
     private IMovementFSM _movementFSM;
     private Vector3 _currentVelocity;
     private Vector3 _inertialVelocity;
@@ -41,6 +42,7 @@ public class StateJump : IMovementState
         _jumpInitialMoveSpeed = parameters.MoveSpeed;
         _jumpHeight = parameters.JumpHeight;
         _jumpDuration = parameters.JumpTime;
+        _forward = parameters.CameraVector;
 
         _timer = new Timer(0.4f);
         _timer.OnDone += _timer_OnDone;
@@ -62,6 +64,7 @@ public class StateJump : IMovementState
     public virtual void HandleMovement(InputAction.CallbackContext context)
     {
         _inputDirection = context.ReadValue<Vector2>();
+        _inputDirection = AllignToCamera(_inputDirection);
     }
 
     public virtual void HandleJump(InputAction.CallbackContext context)
@@ -189,4 +192,12 @@ public class StateJump : IMovementState
         _inertialVelocity = value;
     }
 
+    private Vector2 AllignToCamera(Vector2 worldSpaceInput)
+    {
+        Vector3 input = new Vector3(worldSpaceInput.x, 0, worldSpaceInput.y);
+        var correctionRotation = Quaternion.FromToRotation(Vector3.forward, _forward.Value);
+        input = correctionRotation * input;
+        Vector2 cameraSpaceInput = new Vector2(input.x, input.z);
+        return cameraSpaceInput;
+    }
 }

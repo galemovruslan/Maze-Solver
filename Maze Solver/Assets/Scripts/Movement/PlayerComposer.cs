@@ -7,6 +7,7 @@ public abstract class PlayerComposer : MonoBehaviour
 {
     [SerializeField] protected MoveParameters _moveParameters;
 
+    
     protected IMovementFSM _movementFSM;
     protected ICharacterMover _characterMover;
     protected IMovementStateFactory _stateFactory;
@@ -14,7 +15,7 @@ public abstract class PlayerComposer : MonoBehaviour
     protected Animator _animator;
     protected AnimationPlayer _animationPlayer;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         Bind();
     }
@@ -32,7 +33,7 @@ public abstract class PlayerComposer : MonoBehaviour
 
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         _movementFSM.Tick();
         _animationPlayer.Update();

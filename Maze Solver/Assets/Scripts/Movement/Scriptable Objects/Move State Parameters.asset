@@ -16,3 +16,4 @@ MonoBehaviour:
   _sprintSpeed: 4
   _jumpHeight: 2
   _jumpTime: 1
+  _cameraVector: {fileID: 11400000, guid: ae08c7ea3ea4dc340973e5a0ed2c3026, type: 2}

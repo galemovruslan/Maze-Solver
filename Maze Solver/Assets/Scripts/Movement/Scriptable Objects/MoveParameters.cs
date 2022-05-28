@@ -11,9 +11,12 @@ public class MoveParameters : ScriptableObject
     [Space]
     [SerializeField] private float _jumpHeight;
     [SerializeField] private float _jumpTime;
+    [SerializeField] private Vector3Reference _cameraVector;
 
     public float MoveSpeed => _moveSpeed; 
     public float SprintSpeed => _sprintSpeed;
     public float JumpHeight => _jumpHeight; 
-    public float JumpTime => _jumpTime; 
+    public float JumpTime => _jumpTime;
+    public Vector3Reference CameraVector => _cameraVector; 
+
 }

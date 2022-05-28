@@ -48,6 +48,5 @@ public struct FactoryParameters
     public IMovementFSM stateMachine;
     public ICharacterMover characterController;
     public MoveParameters moveParameters;
-
 }
 

@@ -12,7 +12,7 @@ public class GridComposer : MonoBehaviour
     private Grid _grid;
     private CellView[,] _cellViews;
     private CellFactory _cellFactory;
-    IExitPlacementStrategy _exitPlacer;
+    private IExitPlacementStrategy _exitPlacer;
 
     private void Awake()
     {

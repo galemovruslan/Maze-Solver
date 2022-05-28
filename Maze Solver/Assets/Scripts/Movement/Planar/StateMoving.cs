@@ -7,6 +7,7 @@ public class StateMoving : IMovementState
 {
     public string StateName => MovementNames.MoveName;
 
+    private Vector3Reference _forward;
     private ICharacterMover _characterController;
     private IMovementFSM _movementFSM;
     private Vector3 _currentVelocity;
@@ -35,9 +36,10 @@ public class StateMoving : IMovementState
         _sprintingSpeed = parameters.SprintSpeed;
         _jumpHeight = parameters.JumpHeight;
         _jumpDuration = parameters.JumpTime;
+        _forward = parameters.CameraVector;
 
         _movingSpeed = _runningSpeed;
-        SetupJumpValues();        
+        SetupJumpValues();
     }
     public void Init(Vector3 velocity)
     {
@@ -49,6 +51,7 @@ public class StateMoving : IMovementState
     public virtual void HandleMovement(InputAction.CallbackContext context)
     {
         _inputDirection = context.ReadValue<Vector2>();
+        _inputDirection = AllignToCamera(_inputDirection);
     }
 
     public virtual void HandleJump(InputAction.CallbackContext context)
@@ -93,7 +96,7 @@ public class StateMoving : IMovementState
 
     private Vector3 CalculateMoveJump(Vector3 currentVelocity)
     {
-        if (!_jumpCommand )
+        if (!_jumpCommand)
         {
             return currentVelocity;
         }
@@ -123,5 +126,15 @@ public class StateMoving : IMovementState
     {
         return _factory.Create<StateJump>();
     }
+
+    private Vector2 AllignToCamera(Vector2 worldSpaceInput)
+    {
+        Vector3 input = new Vector3(worldSpaceInput.x, 0, worldSpaceInput.y);
+        var correctionRotation = Quaternion.FromToRotation(Vector3.forward, _forward.Value);
+        input = correctionRotation * input;
+        Vector2 cameraSpaceInput = new Vector2(input.x, input.z);
+        return cameraSpaceInput;
+    }
+
 
 }
