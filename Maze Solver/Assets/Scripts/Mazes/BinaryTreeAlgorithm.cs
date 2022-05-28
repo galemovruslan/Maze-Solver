@@ -22,9 +22,15 @@ public class BinaryTreeAlgorithm : IMazeCarver
             {
                 neighbours.Add(cell.North);
             }
+
             if (cell.East != null)
             {
                 neighbours.Add(cell.East);
+            }
+
+            if(neighbours.Count == 0)
+            {
+                continue;
             }
 
             int randIndex = Random.Range(0, neighbours.Count);

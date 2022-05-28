@@ -14,7 +14,7 @@ public class CellFactory
 
     public CellView Spawn(Vector3 position)
     {
-        CellView newCell = GameObject.Instantiate(_prefab, position, Quaternion.identity, _parent);
+        CellView newCell = GameObject.Instantiate(_prefab, position, Quaternion.identity);
         return newCell;
     }
 

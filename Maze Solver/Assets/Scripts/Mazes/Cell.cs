@@ -19,6 +19,8 @@ public class Cell
     public Cell East { get => _east; set => _east = value; }
     public Cell South { get => _south; set => _south = value; }
     public Cell West { get => _west; set => _west = value; }
+    public CellSide ExitSide { get; set; }
+
 
     private int _row;
     private int _column;
@@ -86,7 +88,10 @@ public class Cell
                 directions.Add(neighbours[i].side);
             }
         }
-
+        if(ExitSide != CellSide.None)
+        {
+            directions.Add(ExitSide);
+        }
         return directions;
     }
 

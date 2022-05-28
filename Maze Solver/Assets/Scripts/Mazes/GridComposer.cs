@@ -8,15 +8,27 @@ public class GridComposer : MonoBehaviour
     [SerializeField] private int _cols;
     [SerializeField] private CellView _cellPrefab;
 
+    private IMazeCarver _mazeCarver;
     private Grid _grid;
     private CellView[,] _cellViews;
-    private CellFactory _factory;
+    private CellFactory _cellFactory;
+    IExitPlacementStrategy _exitPlacer;
 
     private void Awake()
     {
         _grid = new Grid(_rows, _cols);
-        _factory = new CellFactory(_cellPrefab, transform);
+        _mazeCarver = new BinaryTreeAlgorithm(_grid);
+        _exitPlacer = new RandomBorderExitPlacer(_grid);
+
+        _cellFactory = new CellFactory(_cellPrefab, this.transform);
         _cellViews = new CellView[_rows, _cols];
+        MakeMaze();
+    }
+
+    private void MakeMaze()
+    {
+        _mazeCarver.CarveMaze();
+        _exitPlacer.PlaceExit();
         SpawnCells();
     }
 
@@ -31,7 +43,8 @@ public class GridComposer : MonoBehaviour
                     transform.position.y,
                     transform.position.z + col * _cellPrefab.Width);
 
-                CellView newCellView = _factory.Spawn(spawnPosition);
+                CellView newCellView = _cellFactory.Spawn(spawnPosition);
+                newCellView.transform.parent = transform;
                 newCellView.Init(_grid.GetCellAt(row, col));
                 _cellViews[row, col] = newCellView;
             }

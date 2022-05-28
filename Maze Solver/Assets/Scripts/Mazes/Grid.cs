@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Grid
 {
+    public int Rows => _rows;
+    public int Cols => _cols; 
+
     private int _rows;
     private int _cols;
     private Cell[,] _grid;
