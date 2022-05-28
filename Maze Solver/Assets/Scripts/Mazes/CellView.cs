@@ -4,20 +4,27 @@ using UnityEngine;
 
 public class CellView : MonoBehaviour
 {
+    public float Width  => _width;
+
     [SerializeField] private GameObject _northWall;
     [SerializeField] private GameObject _southWall;
     [SerializeField] private GameObject _eastWall;
     [SerializeField] private GameObject _westWall;
+    [SerializeField] private float _width;
 
     private Cell _cell;
 
     public void Init(Cell cell)
     {
         _cell = cell;
+        ProcessLinks();
+    }
 
-        foreach (var link in _cell.Links())
+    private void ProcessLinks()
+    {
+        foreach (var direction in _cell.LinkDirections())
         {
-
+            CarveWall(direction);
         }
     }
 

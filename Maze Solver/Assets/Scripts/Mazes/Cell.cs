@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Cell
 {
-    private struct Neighbour 
+    private struct Neighbour
     {
         public Cell cell;
         public CellSide side;
@@ -72,50 +72,32 @@ public class Cell
 
     public List<CellSide> LinkDirections()
     {
-        if (_links.Count == 0)
-        {
-            return null;
-        }
-
         var directions = new List<CellSide>();
-        var neighbours = Neighbours();
+        var neighbours = SidedNeighbours();
 
         for (int i = 0; i < neighbours.Count; i++)
         {
-            if (neighbours[i] == null)
+            if (neighbours[i].cell == null)
             {
                 continue;
             }
-            if (IsLinked(neighbours[i]))
+            if (IsLinked(neighbours[i].cell))
             {
-                directions.Add(IndexToSide(i));
+                directions.Add(neighbours[i].side);
             }
         }
 
         return directions;
+    }
 
-        CellSide IndexToSide(int index)
+    private List<Neighbour> SidedNeighbours()
+    {
+        return new List<Neighbour>() 
         {
-            if (index == 0)
-            {
-                return CellSide.North;
-            }
-            else if (index == 1)
-            {
-                return CellSide.East;
-            }
-            else if (index == 2)
-            {
-                return CellSide.South;
-            }
-            else if (index == 3)
-            {
-                return CellSide.West;
-            }
-            else
-            {
-                throw new System.Exception("Wrond cell side index");
-            }
-        }
+            new Neighbour() {cell = _north, side = CellSide.North},
+            new Neighbour() {cell = _east, side = CellSide.East},
+            new Neighbour() {cell = _south, side = CellSide.South},
+            new Neighbour() {cell = _west, side = CellSide.West}
+        };
     }
 }

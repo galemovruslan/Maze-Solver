@@ -19,6 +19,7 @@ public class Grid
 
     private void PrepareGrid()
     {
+        _grid = new Cell[_rows, _cols];
         for (int row = 0; row < _rows; row++)
         {
             for (int col = 0; col < _cols; col++)
@@ -67,7 +68,7 @@ public class Grid
     }
     public Cell GetCellAt(int row, int col)
     {
-        if (row > _rows || col > _cols || row < 0 || col < 0)
+        if (row >= _rows || col >= _cols || row < 0 || col < 0)
         {
             return null;
         }

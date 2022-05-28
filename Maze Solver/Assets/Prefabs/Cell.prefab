@@ -51,6 +51,7 @@ MonoBehaviour:
   _southWall: {fileID: 6738736100392872686}
   _eastWall: {fileID: 4348295903172949683}
   _westWall: {fileID: 4957315435174070104}
+  _width: 5
 --- !u!1001 &105042571294811372
 PrefabInstance:
   m_ObjectHideFlags: 0
