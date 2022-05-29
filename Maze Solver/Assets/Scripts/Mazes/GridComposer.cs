@@ -17,7 +17,7 @@ public class GridComposer : MonoBehaviour
     private void Awake()
     {
         _grid = new Grid(_rows, _cols);
-        _mazeCarver = new BinaryTreeAlgorithm(_grid);
+        _mazeCarver = new SidewinderAlgorithm(_grid);
         _exitPlacer = new RandomBorderExitPlacer(_grid);
 
         _cellFactory = new CellFactory(_cellPrefab, this.transform);
