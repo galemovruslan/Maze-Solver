@@ -58,7 +58,6 @@ public class StateJump : IMovementState
         _onCoolDown = true;
         _timer.Reset();
         _timer.Start();
-        Debug.Log(this.ToString());
     }
 
     public virtual void HandleMovement(InputAction.CallbackContext context)

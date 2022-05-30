@@ -45,7 +45,6 @@ public class StateMoving : IMovementState
     {
         _jumpThisFrame = false;
         _currentVelocity = velocity;
-        Debug.Log(this.ToString());
     }
 
     public virtual void HandleMovement(InputAction.CallbackContext context)
