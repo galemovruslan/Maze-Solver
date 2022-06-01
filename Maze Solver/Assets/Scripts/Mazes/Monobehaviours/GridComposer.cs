@@ -30,7 +30,7 @@ public class GridComposer : MonoBehaviour
     private void Awake()
     {
         _grid = new Grid(_rows, _cols);
-        _mazeCarver = new EllersAlgorithm(_grid);
+        _mazeCarver = new RecursiveDivisionAlgorithm(_grid);
         _mazeSolver = new DijkstraAlgorythm();
         _pathCreatePolicy = new MaxLengthPathPolicy(_grid, _mazeSolver);
         _cellFactory = new CellFactory(_cellPrefab, this.transform);
@@ -55,7 +55,7 @@ public class GridComposer : MonoBehaviour
 
     private void PrepareVisuals(List<Cell> path)
     {
-        
+
         SpawnCells();
         ShowPath(path);
         SetPathEnds();
