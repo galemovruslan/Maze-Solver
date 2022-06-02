@@ -12,12 +12,12 @@ public class CellView : MonoBehaviour
     }
     public float Width  => _width;
 
-    [SerializeField] private GameObject _northWall;
-    [SerializeField] private GameObject _southWall;
-    [SerializeField] private GameObject _eastWall;
-    [SerializeField] private GameObject _westWall;
-    [SerializeField] private float _width;
-    [SerializeField] private GameObject _centerPoint;
+    [SerializeField] protected GameObject _northWall;
+    [SerializeField] protected GameObject _southWall;
+    [SerializeField] protected GameObject _eastWall;
+    [SerializeField] protected GameObject _westWall;
+    [SerializeField] protected float _width;
+    [SerializeField] private GameObject _hitnMarker;
     [Space]
     [SerializeField] private Color _startColor;
     [SerializeField] private Color _goalColor;
@@ -26,7 +26,7 @@ public class CellView : MonoBehaviour
     private Cell _cell;
     CellPathType _cellType;
 
-    public void Init(Cell cell)
+    public virtual void Init(Cell cell)
     {
         _cell = cell;
         OpenPathToLinks();
@@ -44,7 +44,7 @@ public class CellView : MonoBehaviour
         _colorChanger.ChangeColor(_goalColor);
     }
 
-    private void OpenPathToLinks()
+    protected virtual void OpenPathToLinks()
     {
         foreach (var direction in _cell.LinkDirections())
         {
@@ -52,7 +52,7 @@ public class CellView : MonoBehaviour
         }
     }
 
-    private void CarveDirection(CellSide side)
+    protected virtual void CarveDirection(CellSide side)
     {
         switch (side)
         {
@@ -71,14 +71,15 @@ public class CellView : MonoBehaviour
         }
     }
 
-    private void HideWall(GameObject wall)
+    protected void HideWall(GameObject wall)
     {
         wall.SetActive(false);
     }
 
-    public void ShowPoint(bool isShow)
+    public void ShowHint(bool isShow, Vector3 direction)
     {
-        _centerPoint.SetActive(isShow);
+        _hitnMarker.SetActive(isShow);
+        _hitnMarker.transform.LookAt(_hitnMarker.transform.position + direction);
     }
     
 }

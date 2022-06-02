@@ -5,12 +5,11 @@ using UnityEngine;
 
 public class Cell
 {
-    private struct Neighbour
+    protected struct Neighbour
     {
         public Cell cell;
         public CellSide side;
     }
-
 
     public int Row => _row;
     public int Column => _column;
@@ -67,7 +66,7 @@ public class Cell
         return _links.ContainsKey(cell);
     }
 
-    public List<Cell> Neighbours()
+    public virtual List<Cell> Neighbours()
     {
         return new List<Cell>() { _north, _east, _south, _west };
     }
@@ -95,7 +94,7 @@ public class Cell
         return directions;
     }
 
-    private List<Neighbour> SidedNeighbours()
+    protected virtual List<Neighbour> SidedNeighbours()
     {
         return new List<Neighbour>() 
         {

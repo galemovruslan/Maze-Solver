@@ -7,9 +7,9 @@ public class Grid
     public int Rows => _rows;
     public int Cols => _cols; 
 
-    private int _rows;
-    private int _cols;
-    private Cell[,] _grid;
+    protected int _rows;
+    protected int _cols;
+    protected Cell[,] _grid;
 
     public Grid(int rows, int cols)
     {
@@ -19,19 +19,6 @@ public class Grid
         PrepareGrid();
         ConfigureCels();
     }
-
-    private void PrepareGrid()
-    {
-        _grid = new Cell[_rows, _cols];
-        for (int row = 0; row < _rows; row++)
-        {
-            for (int col = 0; col < _cols; col++)
-            {
-                _grid[row, col] = new Cell(row, col);
-            }
-        }
-    }
-
 
     public Cell RandomCell()
     {
@@ -77,8 +64,19 @@ public class Grid
         }
         return _grid[row, col];
     }
+    protected virtual void PrepareGrid()
+    {
+        _grid = new Cell[_rows, _cols];
+        for (int row = 0; row < _rows; row++)
+        {
+            for (int col = 0; col < _cols; col++)
+            {
+                _grid[row, col] = new Cell(row, col);
+            }
+        }
+    }
 
-    private void ConfigureCels()
+    protected virtual void ConfigureCels()
     {
         foreach (var cell in EachCell())
         {

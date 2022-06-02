@@ -4,5 +4,9 @@ public enum CellSide
     North,
     South,
     East,
-    West
+    West,
+    NorthEast,
+    NorthWest,
+    SouthEast,
+    SouthWest
 }

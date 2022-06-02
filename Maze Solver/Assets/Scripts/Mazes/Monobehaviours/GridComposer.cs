@@ -9,9 +9,7 @@ public class GridComposer : MonoBehaviour
     {
         get
         {
-            return new Vector3(_startCoords.x * _cellPrefab.Width + _cellPrefab.Width / 2f,
-                transform.position.y,
-                _startCoords.y * _cellPrefab.Width + _cellPrefab.Width / 2f);
+            return new Vector3(0, transform.position.y, 0) + _gridView.GetCenterOffCell(_startCoords.x, _startCoords.y);
         }
     }
 
@@ -19,86 +17,40 @@ public class GridComposer : MonoBehaviour
     [SerializeField] private int _cols;
     [SerializeField] private CellView _cellPrefab;
 
-    private IMazeCarver _mazeCarver;
     private Grid _grid;
-    private CellView[,] _cellViews;
     private CellFactory _cellFactory;
-    private IExitPlacementStrategy _exitPlacer;
+    private IMazeCarver _mazeCarver;
     private DijkstraAlgorythm _mazeSolver;
     private IPathCreatePolicy _pathCreatePolicy;
     private Vector2Int _startCoords;
+
+    private PathMaker _pathMaker;
+    private GridView _gridView;
     private void Awake()
     {
-        _grid = new Grid(_rows, _cols);
-        _mazeCarver = new RecursiveDivisionAlgorithm(_grid);
+        _grid = new HexGrid(_rows, _cols);
+        _mazeCarver = new RecursiveBackTrackerAlgorithm(_grid);
         _mazeSolver = new DijkstraAlgorythm();
         _pathCreatePolicy = new MaxLengthPathPolicy(_grid, _mazeSolver);
         _cellFactory = new CellFactory(_cellPrefab, this.transform);
-        _cellViews = new CellView[_rows, _cols];
+        _pathMaker = new PathMaker(_grid, _mazeSolver, _pathCreatePolicy);
+        _gridView = new HexGridView(_grid, _cellPrefab, this.transform, _cellFactory);
 
         MakeMaze();
     }
 
-    private void ShowPath(List<Cell> path)
-    {
-        foreach (var item in path)
-        {
-            _cellViews[item.Row, item.Column].ShowPoint(true);
-        }
-    }
-
     private void MakeMaze()
     {
-        var path = PrepareModels();
-        PrepareVisuals(path);
-    }
-
-    private void PrepareVisuals(List<Cell> path)
-    {
-
-        SpawnCells();
-        ShowPath(path);
-        SetPathEnds();
-    }
-
-    private List<Cell> PrepareModels()
-    {
         _mazeCarver.CarveMaze();
-        _pathCreatePolicy.GetPathEndPoints();
-        Cell start = _pathCreatePolicy.Start;
-        Cell goal = _pathCreatePolicy.End;
+        List<Cell> path = _pathMaker.MakePath();
+        Cell start = path[0];
+        Cell goal = path[path.Count - 1];
         _startCoords = new Vector2Int(start.Row, start.Column);
-        _exitPlacer = new ArbitraryExitPlacer();
-        _exitPlacer.PlaceExit();
-        List<Cell> path = _mazeSolver.FindShortestPath(start, goal);
-        return path;
+
+        _gridView.SpawnCells();
+        _gridView.MarkPathEnds(start, goal);
+        _gridView.ShowPath(path);
     }
 
-    private void SpawnCells()
-    {
-        for (int row = 0; row < _rows; row++)
-        {
-            for (int col = 0; col < _cols; col++)
-            {
-                Vector3 spawnPosition = new Vector3(
-                    transform.position.x + row * _cellPrefab.Width,
-                    transform.position.y,
-                    transform.position.z + col * _cellPrefab.Width);
-
-                CellView newCellView = _cellFactory.Spawn(spawnPosition);
-                newCellView.transform.parent = transform;
-                newCellView.Init(_grid.GetCellAt(row, col));
-                _cellViews[row, col] = newCellView;
-            }
-        }
-    }
-
-    private void SetPathEnds()
-    {
-        Cell start = _pathCreatePolicy.Start;
-        _cellViews[start.Row, start.Column].SetStart();
-
-        Cell goal = _pathCreatePolicy.End;
-        _cellViews[goal.Row, goal.Column].SetGoal();
-    }
+    
 }
