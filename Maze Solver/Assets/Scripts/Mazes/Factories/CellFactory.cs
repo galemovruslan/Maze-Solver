@@ -5,9 +5,8 @@ using UnityEngine;
 public class CellFactory : ICellFactory
 {
     private CellView _prefab;
-    private Transform _parent;
 
-    public CellFactory(CellView prefab, Transform Parent)
+    public CellFactory(CellView prefab)
     {
         _prefab = prefab;
     }

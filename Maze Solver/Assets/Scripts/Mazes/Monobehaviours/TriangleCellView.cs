@@ -15,6 +15,8 @@ public class TriangleCellView : CellView
         }
     }
 
+    public bool Uprite { get => (_cell as TriangleCell).Upright;}
+
     [SerializeField] private Transform _cellVisual;
 
     private bool _uprite;
@@ -27,8 +29,7 @@ public class TriangleCellView : CellView
         base.Init(cell);
         var triangleCell = cell as TriangleCell;
 
-        _uprite = triangleCell.Upright;
-        if (!_uprite)
+        if (!Uprite)
         {
             SetUpsideDown();
         }
@@ -43,7 +44,7 @@ public class TriangleCellView : CellView
 
     protected override void CarveDirection(CellSide side)
     {
-        if (_uprite)
+        if (Uprite)
         {
             switch (side)
             {
