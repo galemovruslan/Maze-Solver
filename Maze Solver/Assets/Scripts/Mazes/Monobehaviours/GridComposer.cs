@@ -28,13 +28,13 @@ public class GridComposer : MonoBehaviour
     private GridView _gridView;
     private void Awake()
     {
-        _grid = new HexGrid(_rows, _cols);
+        _grid = new TriangleGrid(_rows, _cols);
         _mazeCarver = new RecursiveBackTrackerAlgorithm(_grid);
         _mazeSolver = new DijkstraAlgorythm();
         _pathCreatePolicy = new MaxLengthPathPolicy(_grid, _mazeSolver);
         _cellFactory = new CellFactory(_cellPrefab, this.transform);
         _pathMaker = new PathMaker(_grid, _mazeSolver, _pathCreatePolicy);
-        _gridView = new HexGridView(_grid, _cellPrefab, this.transform, _cellFactory);
+        _gridView = new TriangleGridView(_grid, _cellPrefab, this.transform, _cellFactory);
 
         MakeMaze();
     }
@@ -42,14 +42,14 @@ public class GridComposer : MonoBehaviour
     private void MakeMaze()
     {
         _mazeCarver.CarveMaze();
-        List<Cell> path = _pathMaker.MakePath();
-        Cell start = path[0];
-        Cell goal = path[path.Count - 1];
-        _startCoords = new Vector2Int(start.Row, start.Column);
+        //List<Cell> path = _pathMaker.MakePath();
+        //Cell start = path[0];
+        //Cell goal = path[path.Count - 1];
+        //_startCoords = new Vector2Int(start.Row, start.Column);
 
         _gridView.SpawnCells();
-        _gridView.MarkPathEnds(start, goal);
-        _gridView.ShowPath(path);
+        //_gridView.MarkPathEnds(start, goal);
+        //_gridView.ShowPath(path);
     }
 
     

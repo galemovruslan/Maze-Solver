@@ -23,8 +23,8 @@ public class CellView : MonoBehaviour
     [SerializeField] private Color _goalColor;
     [SerializeField] private ColorChanger _colorChanger;
 
-    private Cell _cell;
-    CellPathType _cellType;
+    protected Cell _cell;
+    private CellPathType _cellType;
 
     public virtual void Init(Cell cell)
     {
