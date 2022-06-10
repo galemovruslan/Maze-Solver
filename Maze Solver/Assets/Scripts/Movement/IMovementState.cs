@@ -8,11 +8,8 @@ public interface IMovementState
 
     void Init(Vector3 velocity);
 
-    void Move();
+    void Move(Vector2 inputDirection, bool jumpCommand);
 
-    void HandleMovement(InputAction.CallbackContext context);
+    void ChangeState(IMovementState nextState);
 
-    void HandleJump(InputAction.CallbackContext context);
-
-    void HandleSprint(InputAction.CallbackContext context);
 }

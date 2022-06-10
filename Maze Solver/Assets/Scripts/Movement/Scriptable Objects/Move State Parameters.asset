@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 586d10e2fa3e0c14ea8e02e10119cb9a, type: 3}
   m_Name: Move State Parameters
   m_EditorClassIdentifier: 
-  _moveSpeed: 2
-  _sprintSpeed: 4
+  _moveSpeed: 4
+  _sprintSpeed: 10
   _jumpHeight: 2
   _jumpTime: 1
   _cameraVector: {fileID: 11400000, guid: ae08c7ea3ea4dc340973e5a0ed2c3026, type: 2}

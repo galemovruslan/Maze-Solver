@@ -16,6 +16,7 @@ public class AnimationPlayer
     private readonly string _runTriggerName = "Run";
     private readonly string _jumpTriggerName = "Jump";
     private readonly string _speedFloatName = "Speed";
+    private readonly string _dashFloatName = "Dash";
 
     public AnimationPlayer(Animator controller, ICharacterMover characterMover)
     {
@@ -24,6 +25,7 @@ public class AnimationPlayer
         _triggersMap = new Dictionary<string, int>();
         _triggersMap.Add(MovementNames.MoveName, Animator.StringToHash(_runTriggerName));
         _triggersMap.Add(MovementNames.JumpName, Animator.StringToHash(_jumpTriggerName));
+        _triggersMap.Add(MovementNames.DashName, Animator.StringToHash(_dashFloatName));
         _speedHash = Animator.StringToHash(_speedFloatName);
     }
 

@@ -10,10 +10,10 @@ public class StateMove2D : StateMoving
     {
     }
 
-    public override void HandleMovement(InputAction.CallbackContext context)
+    public override void Move(Vector2 inputDirection, bool jumpCommand)
     {
-        _inputDirection = context.ReadValue<Vector2>();
-        _inputDirection.y = 0;
+        inputDirection.y = 0;
+        base.Move(inputDirection, jumpCommand);
     }
 
     protected override IMovementState GetJumpState()

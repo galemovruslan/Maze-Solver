@@ -13,10 +13,7 @@ public class MovementFactory2D : MovementFactoryImpl
     protected override void PopulateMap(IMovementFSM stateMachine, ICharacterMover characterController)
     {
         var moveState = new StateMove2D(stateMachine, this, characterController, _moveParameters);
-        RouteInput(moveState, _inputActions);
-
         var jumpState = new StateJump2D(stateMachine, this, characterController, _moveParameters);
-        RouteInput(jumpState, _inputActions);
 
         _map.Add(typeof(StateMove2D), moveState);
         _map.Add(typeof(StateJump2D), jumpState);

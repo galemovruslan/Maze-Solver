@@ -23,24 +23,14 @@ public class MovementFactoryImpl : IMovementStateFactory
     protected virtual void PopulateMap(IMovementFSM stateMachine, ICharacterMover characterController)
     {
         var moveState = new StateMoving(stateMachine, this, characterController, _moveParameters);
-        RouteInput(moveState, _inputActions);
-
         var jumpState = new StateJump(stateMachine, this, characterController, _moveParameters);
-        RouteInput(jumpState, _inputActions);
+        var dashState = new StateDash(stateMachine, this, characterController, 7.5f, 0.1f);
 
         _map.Add(typeof(StateMoving), moveState);
         _map.Add(typeof(StateJump), jumpState);
+        _map.Add(typeof(StateDash), dashState);
     }
 
-    protected void RouteInput(IMovementState state, InputActions inputActions)
-    {
-        inputActions.Player.Movement.performed += state.HandleMovement;
-        inputActions.Player.Movement.canceled += state.HandleMovement;
-        inputActions.Player.Jump.started += state.HandleJump;
-        inputActions.Player.Jump.canceled += state.HandleJump;
-        inputActions.Player.Sprint.performed += state.HandleSprint;
-        inputActions.Player.Sprint.canceled += state.HandleSprint;
-    }
 }
 public struct FactoryParameters
 {

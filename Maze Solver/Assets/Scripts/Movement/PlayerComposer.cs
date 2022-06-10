@@ -11,10 +11,12 @@ public abstract class PlayerComposer : MonoBehaviour
     protected IMovementFSM _movementFSM;
     protected ICharacterMover _characterMover;
     protected IMovementStateFactory _stateFactory;
+    protected AbilityFactory _abilityFactory;
     protected CharacterController _controller;
     protected Animator _animator;
     protected AnimationPlayer _animationPlayer;
-
+    protected InputHandler _inputHandler;
+    protected AbilityHandler _actionHandler;
     protected virtual void Awake()
     {
         Bind();

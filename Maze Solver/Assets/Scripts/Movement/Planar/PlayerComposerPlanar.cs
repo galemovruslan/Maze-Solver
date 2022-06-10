@@ -17,11 +17,11 @@ public class PlayerComposerPlanar : PlayerComposer
 
     protected override void Update()
     {
-        _lookDirection.Value = GetCameraForard();
+        _lookDirection.Value = GetCameraForward();
         base.Update();
     }
 
-    private Vector3 GetCameraForard()
+    private Vector3 GetCameraForward()
     {
         var cameraForward = _camera.transform.forward;
         cameraForward.y = 0;
@@ -51,6 +51,10 @@ public class PlayerComposerPlanar : PlayerComposer
 
         _animator = GetComponent<Animator>();
         _animationPlayer = new AnimationPlayer(_animator, _characterMover);
+
+        _abilityFactory = new AbilityFactory(_movementFSM, _stateFactory);
+        _actionHandler = new AbilityHandler(_abilityFactory.Create<DashAbility>());
+        _inputHandler = new InputHandler(playerInput, _movementFSM, _actionHandler);
     }
 
 }

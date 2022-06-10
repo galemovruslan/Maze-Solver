@@ -10,6 +10,9 @@ public class PlayerFSM : IMovementFSM
     private IMovementState _currentState;
     private bool _initialized = false;
 
+    private Vector2 _inputDirection;
+    private bool _jumpCommand;
+
     public PlayerFSM()
     { 
     }
@@ -26,12 +29,17 @@ public class PlayerFSM : IMovementFSM
         _currentState = newState;
         string stateName = _currentState.StateName;
         OnStateChange?.Invoke(stateName);
+        Debug.Log(stateName);
     }
 
     public void Tick()
     {
         CheckInitialized();
-        _currentState.Move();
+        _currentState.Move(_inputDirection, _jumpCommand);
+    }
+    public void ForceState(IMovementState newState)
+    {
+        _currentState.ChangeState(newState);
     }
 
     private void CheckInitialized()
@@ -40,5 +48,15 @@ public class PlayerFSM : IMovementFSM
         {
             throw new System.Exception("FSM has not been initialized");
         }
+    }
+
+    public void HandleMovement(Vector2 inputDirection)
+    {
+        _inputDirection = inputDirection;
+    }
+
+    public void HandleJump(bool jumpCommand)
+    {
+        _jumpCommand = jumpCommand;
     }
 }

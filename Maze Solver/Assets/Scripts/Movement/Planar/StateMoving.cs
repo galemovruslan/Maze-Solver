@@ -47,21 +47,12 @@ public class StateMoving : IMovementState
         _currentVelocity = velocity;
     }
 
-    public virtual void HandleMovement(InputAction.CallbackContext context)
-    {
-        _inputDirection = context.ReadValue<Vector2>();
-        _inputDirection = AllignToCamera(_inputDirection);
-    }
-
-    public virtual void HandleJump(InputAction.CallbackContext context)
-    {
-        _jumpCommand = context.ReadValueAsButton();
-    }
-
     public virtual void HandleSprint(InputAction.CallbackContext context)
     {
         _movingSpeed = context.ReadValueAsButton() ? _sprintingSpeed : _runningSpeed;
     }
+
+  
 
     public void ChangeState(IMovementState nextState)
     {
@@ -69,12 +60,15 @@ public class StateMoving : IMovementState
         _movementFSM.ChangeState(nextState);
     }
 
-    public void Move()
+    public virtual void Move(Vector2 inputDirection, bool jumpCommand)
     {
+        _jumpCommand = jumpCommand;
+        _inputDirection = inputDirection;
+        _inputDirection = AllignToCamera(_inputDirection);
         _currentVelocity = CalculateMoveInput(_currentVelocity, _inputDirection);
         _characterController.Move(_currentVelocity * Time.deltaTime);
         _currentVelocity = CalculateMoveGravity(_currentVelocity, _gravityConstant);
-        _currentVelocity = CalculateMoveJump(_currentVelocity);
+        _currentVelocity = CalculateMoveJump(_currentVelocity, _jumpCommand);
         _jumpCommand = false;
         CheckStateChange();
     }
@@ -93,9 +87,9 @@ public class StateMoving : IMovementState
         return currentVelocity;
     }
 
-    private Vector3 CalculateMoveJump(Vector3 currentVelocity)
+    private Vector3 CalculateMoveJump(Vector3 currentVelocity, bool jumpCommand)
     {
-        if (!_jumpCommand)
+        if (!jumpCommand)
         {
             return currentVelocity;
         }
@@ -135,5 +129,5 @@ public class StateMoving : IMovementState
         return cameraSpaceInput;
     }
 
-
+    
 }

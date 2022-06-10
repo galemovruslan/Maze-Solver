@@ -54,29 +54,21 @@ public class StateJump : IMovementState
         _currentVelocity = velocity;
         _inertialVelocity = velocity;
 
-        _jumpAllowed = true;
+        _jumpAllowed = false;
         _onCoolDown = true;
         _timer.Reset();
         _timer.Start();
-    }
-
-    public virtual void HandleMovement(InputAction.CallbackContext context)
-    {
-        _inputDirection = context.ReadValue<Vector2>();
-        _inputDirection = AllignToCamera(_inputDirection);
-    }
-
-    public virtual void HandleJump(InputAction.CallbackContext context)
-    {
-        _jumpCommand = context.ReadValueAsButton();
     }
 
     public virtual void HandleSprint(InputAction.CallbackContext context)
     {
     }
 
-    public void Move()
+    public void Move(Vector2 inputDirection, bool jumpCommand)
     {
+        _inputDirection = inputDirection;
+        _inputDirection = AllignToCamera(_inputDirection);
+        _jumpCommand = jumpCommand;
         _timer.Tick(Time.deltaTime);
         HandleGrounging(
             isGrounded: _characterController.isGrounded,
@@ -96,6 +88,12 @@ public class StateJump : IMovementState
     public void DisableJump()
     {
         _jumpAllowed = false;
+    }
+
+    public void ChangeState(IMovementState nextState)
+    {
+        nextState.Init(_currentVelocity);
+        _movementFSM.ChangeState(nextState);
     }
 
     protected virtual bool CheckJumpAllowed()
@@ -163,11 +161,6 @@ public class StateJump : IMovementState
         ChangeState(nextState);
     }
 
-    private void ChangeState(IMovementState nextState)
-    {
-        nextState.Init(_currentVelocity);
-        _movementFSM.ChangeState(nextState);
-    }
 
     private void SetupJumpValues()
     {
@@ -199,4 +192,5 @@ public class StateJump : IMovementState
         Vector2 cameraSpaceInput = new Vector2(input.x, input.z);
         return cameraSpaceInput;
     }
+
 }
