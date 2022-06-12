@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerFSM : IMovementFSM
 {
     public event Action<string> OnStateChange;
+    public IMovementState CurrentState => _currentState;
 
     private IMovementState _currentState;
     private bool _initialized = false;

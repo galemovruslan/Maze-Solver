@@ -69,7 +69,7 @@ public class StateJump : IMovementState
         _inputDirection = inputDirection;
         _inputDirection = AllignToCamera(_inputDirection);
         _jumpCommand = jumpCommand;
-        _timer.Tick(Time.deltaTime);
+        //_timer.Tick(Time.deltaTime);
         HandleGrounging(
             isGrounded: _characterController.isGrounded,
             isMoveDown: _currentVelocity.y < 0);

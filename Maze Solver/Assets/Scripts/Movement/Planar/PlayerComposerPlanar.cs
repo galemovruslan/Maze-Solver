@@ -53,7 +53,7 @@ public class PlayerComposerPlanar : PlayerComposer
         _animationPlayer = new AnimationPlayer(_animator, _characterMover);
 
         _abilityFactory = new AbilityFactory(_movementFSM, _stateFactory);
-        _actionHandler = new AbilityHandler(_abilityFactory.Create<DashAbility>());
+        _actionHandler = new AbilityHandler(_abilityFactory.Create<SprintAbility>());
         _inputHandler = new InputHandler(playerInput, _movementFSM, _actionHandler);
     }
 

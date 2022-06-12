@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 4
   _sprintSpeed: 10
+  _sprintTime: 3
   _jumpHeight: 2
   _jumpTime: 1
   _cameraVector: {fileID: 11400000, guid: ae08c7ea3ea4dc340973e5a0ed2c3026, type: 2}

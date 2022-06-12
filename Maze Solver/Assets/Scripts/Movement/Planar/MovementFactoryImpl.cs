@@ -25,10 +25,12 @@ public class MovementFactoryImpl : IMovementStateFactory
         var moveState = new StateMoving(stateMachine, this, characterController, _moveParameters);
         var jumpState = new StateJump(stateMachine, this, characterController, _moveParameters);
         var dashState = new StateDash(stateMachine, this, characterController, 7.5f, 0.1f);
+        var sprintState = new StateSprint(stateMachine, this, characterController,_moveParameters);
 
         _map.Add(typeof(StateMoving), moveState);
         _map.Add(typeof(StateJump), jumpState);
         _map.Add(typeof(StateDash), dashState);
+        _map.Add(typeof(StateSprint), sprintState);
     }
 
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimationPlayer 
+public class AnimationPlayer
 {
     // TODO в класс PlayerFSM добавить событие на смену состояния
     // событие возвращает строку с названием соответствующего состояния;
@@ -31,6 +31,10 @@ public class AnimationPlayer
 
     public void MakeTransition(string stateName)
     {
+        if (string.IsNullOrEmpty(stateName)) 
+        {
+            return;
+        }
         _controller.SetTrigger(_triggersMap[stateName]);
     }
 

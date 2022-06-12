@@ -18,7 +18,7 @@ public class DelayedAction
     {
         if (IsRunning)
         {
-            _timer.Tick(deltaTime);
+            //_timer.Tick(deltaTime);
         }
     }
 

@@ -36,7 +36,7 @@ public class StateDash : IMovementState
     public void Init(Vector3 velocity)
     {
         var moveDirection = velocity;
-        moveDirection.y = 0;
+        moveDirection.y = -0.05f;
         _currentVelocity = moveDirection.normalized * _speed;
         _initVelocity = velocity;
         _timer.Reset();
@@ -45,7 +45,6 @@ public class StateDash : IMovementState
 
     public void Move(Vector2 inputDirection, bool jumpCommand)
     {
-        _timer.Tick(Time.deltaTime);
         _characterController.Move(_currentVelocity*Time.deltaTime);
     }
 

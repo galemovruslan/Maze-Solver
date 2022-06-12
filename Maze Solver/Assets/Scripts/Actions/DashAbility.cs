@@ -24,4 +24,5 @@ public class DashAbility : IAbility
         _movementFSM.ForceState(_dashState);
     }
 
+    public bool CheckPrerequsites() => true;
 }

@@ -18,6 +18,7 @@ public class Timer
     public Timer(float setTime)
     {
         _setTime = setTime;
+        TimerTicker.Instance.AddTimer(this);
     }
 
     public void Start()

@@ -18,7 +18,6 @@ public class AbilityHandler
 
     public void TryUse()
     {
-        _cooldown.Tick(Time.time - _lastUsedTime);
         if (!IsReady())
         {
             return;
@@ -42,7 +41,7 @@ public class AbilityHandler
 
     private bool IsReady()
     {
-        return !_onCD;
+        return !_onCD && _ability.CheckPrerequsites();
     }
     private void _cooldown_OnDone()
     {

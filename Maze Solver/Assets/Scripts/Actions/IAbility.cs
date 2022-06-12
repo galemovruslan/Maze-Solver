@@ -7,4 +7,5 @@ public interface IAbility
     float Cooldown { get; }
     IMovementState AbilityState { get; }
     void Use();
+    bool CheckPrerequsites();
 }

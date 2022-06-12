@@ -5,13 +5,11 @@ using UnityEngine.InputSystem;
 
 public class StateMoving : IMovementState
 {
-    public string StateName => MovementNames.MoveName;
+    public virtual string StateName => MovementNames.MoveName;
 
     private Vector3Reference _forward;
     private ICharacterMover _characterController;
     private IMovementFSM _movementFSM;
-    private Vector3 _currentVelocity;
-    private float _movingSpeed;
     private float _runningSpeed;
     private float _sprintingSpeed;
     private float _jumpForce = 10f;
@@ -19,6 +17,8 @@ public class StateMoving : IMovementState
     private float _jumpDuration;
     private bool _jumpThisFrame = false;
 
+    protected Vector3 _currentVelocity;
+    protected float _movingSpeed;
     protected IMovementStateFactory _factory;
     protected Vector2 _inputDirection;
     protected bool _jumpCommand = false;
@@ -41,7 +41,7 @@ public class StateMoving : IMovementState
         _movingSpeed = _runningSpeed;
         SetupJumpValues();
     }
-    public void Init(Vector3 velocity)
+    public virtual void Init(Vector3 velocity)
     {
         _jumpThisFrame = false;
         _currentVelocity = velocity;
@@ -54,7 +54,7 @@ public class StateMoving : IMovementState
 
   
 
-    public void ChangeState(IMovementState nextState)
+    public virtual void ChangeState(IMovementState nextState)
     {
         nextState.Init(_currentVelocity);
         _movementFSM.ChangeState(nextState);
@@ -99,7 +99,7 @@ public class StateMoving : IMovementState
         return currentVelocity;
     }
 
-    private void CheckStateChange()
+    protected virtual void CheckStateChange()
     {
         if (_jumpThisFrame || !_characterController.isGrounded)
         {

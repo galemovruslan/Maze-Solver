@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IMovementFSM
 {
+    IMovementState CurrentState { get; }
     event Action<string> OnStateChange;
     void Tick();
     void Init(IMovementState newState);
