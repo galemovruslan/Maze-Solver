@@ -59,6 +59,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b21a7d40d97cb6408f4fc66b60f38e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player: {fileID: 744063152088366662, guid: d0841731b42ef524d81ab79e217e3119, type: 3}
+  _playerPrefab: {fileID: 744063152088366662, guid: d0841731b42ef524d81ab79e217e3119, type: 3}
   _gridComposer: {fileID: 3236757625830649864}
-  _camera: {fileID: 0}
+  _camera: {fileID: 6105123221743999775, guid: 2b6cb5d0e6eaeec4ab52424f6e314703, type: 3}

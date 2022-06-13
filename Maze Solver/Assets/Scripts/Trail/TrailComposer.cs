@@ -18,13 +18,20 @@ public class TrailComposer : MonoBehaviour
         _renderer = GetComponent<LineRenderer>();
     }
 
-    private void OnTrailChange()
+    private void Redraw()
     {
         var points = _trail.GetTrail();
-        points.ForEach(p => p.y = _height);
+        Vector3[] trailArray = new Vector3[points.Count];
 
-        _renderer.positionCount = points.Count;
-        _renderer.SetPositions(points.ToArray());
+        for (int pointIndex = 0; pointIndex < points.Count; pointIndex++)
+        {
+            trailArray[pointIndex] = new Vector3(points[pointIndex].x, points[pointIndex].y + _height, points[pointIndex].z);
+        }
+        if (_renderer.positionCount != points.Count)
+        {
+            _renderer.positionCount = points.Count;
+        }
+        _renderer.SetPositions(trailArray);
     }
 
     private void Update()
@@ -35,13 +42,14 @@ public class TrailComposer : MonoBehaviour
         }
 
         _trail.UpdateTrail();
+        Redraw();
     }
 
     private void Initialize()
     {
         _brush = FindObjectOfType<PlayerSpawner>().Player.GetComponent<TrailBrush>();
         _trail = new DynamicTrail(_brush, _minDistance);
-        _trail.TrailChange += OnTrailChange;
+        _trail.TrailChange += Redraw;
     }
 
 }

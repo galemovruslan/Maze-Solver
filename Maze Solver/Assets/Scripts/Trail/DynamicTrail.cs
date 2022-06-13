@@ -11,6 +11,7 @@ public class DynamicTrail
     private List<Vector3> _points;
     private TrailBrush _brush;
     private Vector3 _lastPoint;
+    private Vector3 _currentPosition;
     public DynamicTrail(TrailBrush brush, float minDistance)
     {
         _brush = brush;
@@ -20,21 +21,28 @@ public class DynamicTrail
         _points.Add(_lastPoint);
     }
 
-    public void UpdateTrail()
+    public void TryAddToTrail()
     {
-        var newPoint = _brush.Position;
-        if( (newPoint - _lastPoint).magnitude >= _minDistance)
+        if( (_currentPosition - _lastPoint).magnitude >= _minDistance)
         {
-            _points.Add(newPoint);
-            _lastPoint = newPoint;
+            _points.Add(_currentPosition);
+            _lastPoint = _currentPosition;
             TrailChange?.Invoke();
         }
-        _points[_points.Count - 1] = newPoint;
+        //_points[_points.Count - 1] = _currentPosition;
+    }
+
+    public void UpdateTrail()
+    {
+        _currentPosition = _brush.Position;
+        TryAddToTrail();
     }
 
     public List<Vector3> GetTrail()
     {
-        return _points;
+        var trail = new List<Vector3>(_points);
+        trail.Add(_currentPosition);
+        return trail;
     }
 
 }
