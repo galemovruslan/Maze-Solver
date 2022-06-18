@@ -111,7 +111,7 @@ public class MazeSettings : MonoBehaviour
                 }
             case Difficulty.Normal:
                 {
-                    _featurePanel.TurnOffAt(0);
+                    _featurePanel.TurnOnAt(0);
                     _featurePanel.TurnOffAt(1);
                     _featurePanel.TurnOffAt(2);
                     break;
@@ -120,7 +120,7 @@ public class MazeSettings : MonoBehaviour
                 {
                     _featurePanel.TurnOnAt(0);
                     _featurePanel.TurnOnAt(1);
-                    _featurePanel.TurnOnAt(2);
+                    _featurePanel.TurnOffAt(2);
                     break;
                 }
         }
@@ -129,6 +129,7 @@ public class MazeSettings : MonoBehaviour
     private void OnAccept()
     {
         LevelDescription levelDescription = new LevelDescription(_mazeWidth, _mazeHeight, _cellType, _carverAlgorithm, _difficulty);
+        DataSerializer.Write(StringConstants.DescriptionSavePath, levelDescription);
     }
 
 }

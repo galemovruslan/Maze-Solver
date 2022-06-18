@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,17 +21,27 @@ public abstract class GridComposer : MonoBehaviour
     protected Grid _grid;
     protected CellFactory _cellFactory;
     protected GridView _gridView;
-    protected HintDisplayer _hintDisplayer;
+    protected PathDisplayer _hintDisplayer;
 
     private IMazeCarver _mazeCarver;
     private DijkstraAlgorythm _mazeSolver;
     private IPathCreatePolicy _pathCreatePolicy;
     private Vector2Int _startCoords;
-
     private PathMaker _pathMaker;
-    protected virtual void Awake()
+
+    //protected virtual void Awake()
+    //{
+    //    _mazeCarver = new RecursiveBackTrackerAlgorithm(_grid);
+    //    _mazeSolver = new DijkstraAlgorythm();
+    //    _pathCreatePolicy = new MaxLengthPathPolicy(_grid, _mazeSolver);
+    //    _pathMaker = new PathMaker(_grid, _mazeSolver, _pathCreatePolicy);
+
+    //    MakeMaze();
+    //}
+
+    public virtual void Initialize(Func<GridView, PathDisplayer> hintSolver, Func<Grid, IMazeCarver> mazeCarverSolver)
     {
-        _mazeCarver = new RecursiveBackTrackerAlgorithm(_grid);
+        _mazeCarver = mazeCarverSolver(_grid);
         _mazeSolver = new DijkstraAlgorythm();
         _pathCreatePolicy = new MaxLengthPathPolicy(_grid, _mazeSolver);
         _pathMaker = new PathMaker(_grid, _mazeSolver, _pathCreatePolicy);

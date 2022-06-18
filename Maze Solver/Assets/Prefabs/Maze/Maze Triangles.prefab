@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3660504953460363439}
   - component: {fileID: 5978495274670723739}
-  - component: {fileID: 3660504953460363437}
   m_Layer: 0
   m_Name: Maze Triangles
   m_TagString: Untagged
@@ -47,18 +46,3 @@ MonoBehaviour:
   _rows: 20
   _cols: 20
   _cellPrefab: {fileID: 4130139746993335718, guid: e655926db5225f147b67d5cca6b74ecc, type: 3}
---- !u!114 &3660504953460363437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3660504953460363410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b21a7d40d97cb6408f4fc66b60f38e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _playerPrefab: {fileID: 744063152088366662, guid: d0841731b42ef524d81ab79e217e3119, type: 3}
-  _gridComposer: {fileID: 5978495274670723739}
-  _camera: {fileID: 0}

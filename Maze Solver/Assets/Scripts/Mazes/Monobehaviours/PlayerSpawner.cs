@@ -8,16 +8,14 @@ public class PlayerSpawner : MonoBehaviour
     public GameObject Player => _playerOnScene;
 
     [SerializeField] private GameObject _playerPrefab;
-    [SerializeField] private GridComposer _gridComposer;
-    [SerializeField] private CinemachineVirtualCamera _camera;
 
     private GameObject _playerOnScene;
 
-    private void Start()
+    public void Spawn(Vector3 startPosition)
     {
-        var player = Instantiate<GameObject>(_playerPrefab, _gridComposer.StartPosition, Quaternion.identity);
-        _camera.Follow = player.transform;
-        _camera.LookAt = player.transform;
+        var player = Instantiate<GameObject>(_playerPrefab, startPosition, Quaternion.identity);
         _playerOnScene = player;
     }
+
+
 }

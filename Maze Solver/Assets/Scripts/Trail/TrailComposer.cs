@@ -18,6 +18,35 @@ public class TrailComposer : MonoBehaviour
         _renderer = GetComponent<LineRenderer>();
     }
 
+    private void Update()
+    {
+        if (_trail == null)
+        {
+            return;
+        }
+
+        _trail.UpdateTrail();
+        Redraw();
+    }
+    public void Initialize(TrailBrush brush)
+    {
+        _brush = brush;
+        _trail = new DynamicTrail(_brush, _minDistance);
+        _trail.TrailChange += Redraw;
+    }
+
+    public void Hide()
+    {
+        this.enabled = false;
+        _renderer.enabled = false;
+    }
+
+    public void Show()
+    {
+        this.enabled = true;
+        _renderer.enabled = true;
+    }
+
     private void Redraw()
     {
         var points = _trail.GetTrail();
@@ -32,24 +61,6 @@ public class TrailComposer : MonoBehaviour
             _renderer.positionCount = points.Count;
         }
         _renderer.SetPositions(trailArray);
-    }
-
-    private void Update()
-    {
-        if (_trail == null)
-        {
-            Initialize();
-        }
-
-        _trail.UpdateTrail();
-        Redraw();
-    }
-
-    private void Initialize()
-    {
-        _brush = FindObjectOfType<PlayerSpawner>().Player.GetComponent<TrailBrush>();
-        _trail = new DynamicTrail(_brush, _minDistance);
-        _trail.TrailChange += Redraw;
     }
 
 }

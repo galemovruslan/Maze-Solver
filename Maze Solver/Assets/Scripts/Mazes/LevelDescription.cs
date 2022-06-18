@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelDescription 
+[System.Serializable]
+public class LevelDescription
 {
-    private int _mazeWidth;
-    private int _mazeHeight;
-    private CellType _cellType;
-    private CarverAlgorithm _carverAlgorithm;
-    private Difficulty _difficulty;
+    public int _mazeWidth;
+    public int _mazeHeight;
+    public CellType _cellType;
+    public CarverAlgorithm _carverAlgorithm;
+    public Difficulty _difficulty;
 
 
     public LevelDescription(int mazeWidth, int mazeHeight, CellType cellType, CarverAlgorithm carverAlgorithm, Difficulty difficulty)
@@ -19,4 +20,5 @@ public class LevelDescription
         _carverAlgorithm = carverAlgorithm;
         _difficulty = difficulty;
     }
+
 }

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8370844214230762931}
   - component: {fileID: 3495060977784039868}
-  - component: {fileID: 8370844214230762930}
   m_Layer: 0
   m_Name: Maze Rect
   m_TagString: Untagged
@@ -47,18 +46,3 @@ MonoBehaviour:
   _rows: 20
   _cols: 20
   _cellPrefab: {fileID: 5897239286988949816, guid: 91ec4c02e677e1c429d62b52e9a37bb1, type: 3}
---- !u!114 &8370844214230762930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8370844214230762929}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b21a7d40d97cb6408f4fc66b60f38e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _playerPrefab: {fileID: 744063152088366662, guid: d0841731b42ef524d81ab79e217e3119, type: 3}
-  _gridComposer: {fileID: 3495060977784039868}
-  _camera: {fileID: 0}
