@@ -11,6 +11,7 @@ public class Stage : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera _cameraPrefab;
     [SerializeField] private TrailComposer _trailPrefab;
     [SerializeField] private PlayerSpawner _playerSpawnerPrefab;
+    [SerializeField] private WinMenu _winMenu;
 
     private LevelDescription _currentDescription;
     private GridComposer _currentGridComposer;
@@ -58,7 +59,12 @@ public class Stage : MonoBehaviour
     private void SpawmMaze(CellType cellType)
     {
         _currentGridComposer = Instantiate(_composerPrefabs[(int)cellType]);
-        _currentGridComposer.Initialize(_pathDisplayerCreator, _carverCreator);
+        _currentGridComposer.Initialize(
+            _currentDescription._mazeWidth, 
+            _currentDescription._mazeHeight, 
+            _pathDisplayerCreator, 
+            _carverCreator);
+        _currentGridComposer.SetWinAction(() => _winMenu.Show()) ;
     }
     private void ResolveCarver(CarverAlgorithm algorithm)
     {

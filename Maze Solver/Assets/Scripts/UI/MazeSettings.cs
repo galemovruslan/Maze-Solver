@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class MazeSettings : MonoBehaviour
 {
@@ -46,6 +48,12 @@ public class MazeSettings : MonoBehaviour
         {2, Difficulty.Walking }
     };
 
+    private void Awake()
+    {
+        
+    }
+
+   
     private void OnEnable()
     {
         _widthInput.ValueChange += OnWidthChange;
@@ -68,6 +76,7 @@ public class MazeSettings : MonoBehaviour
 
     private void Start()
     {
+        LoadDescription();
         OnDifficultyChange(_difficultySelector.Value);
     }
 
@@ -130,6 +139,26 @@ public class MazeSettings : MonoBehaviour
     {
         LevelDescription levelDescription = new LevelDescription(_mazeWidth, _mazeHeight, _cellType, _carverAlgorithm, _difficulty);
         DataSerializer.Write(StringConstants.DescriptionSavePath, levelDescription);
+        SceneManager.LoadScene("Game");
     }
+
+    private void LoadDescription()
+    {
+        LevelDescription existingDescription = DataSerializer.Read<LevelDescription>(StringConstants.DescriptionSavePath);
+        if (existingDescription == null) { return; }
+
+        _widthInput.ExternalChange(existingDescription._mazeWidth);
+        _heghtInput.ExternalChange(existingDescription._mazeHeight);
+
+        var cellTypeIndex = _cellTypeMap.Where(kvp => kvp.Value == existingDescription._cellType).Select(kvp => kvp.Key).First();
+        _cellTypeSelector.ExternalChange(cellTypeIndex);
+
+        var difficultyIndex = _difficultyMap.Where(kvp => kvp.Value == existingDescription._difficulty).Select(kvp => kvp.Key).First();
+        _difficultySelector.ExternalChange(difficultyIndex);
+
+        var algorithmIndex = _algorithmMap.Where(kvp => kvp.Value == existingDescription._carverAlgorithm).Select(kvp => kvp.Key).First();
+        _algorithmSelector.ExternalSelection(algorithmIndex);
+    }
+
 
 }

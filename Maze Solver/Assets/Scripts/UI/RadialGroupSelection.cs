@@ -47,4 +47,10 @@ public class RadialGroupSelection : MonoBehaviour
         ValueChange?.Invoke(_selectionValue);
     }
 
+    public void ExternalChange(int toggleNum)
+    {
+        _options[toggleNum].isOn = true;
+        //OnToggleChange(toggleNum);
+    }
+
 }

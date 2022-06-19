@@ -25,13 +25,23 @@ public class NumericInput : MonoBehaviour
         _slider.minValue = _minValue;
         _currentValue = ConstrainValue(_currentValue, _minValue, _maxValue);
         _inputField.text = _currentValue.ToString();
-        _slider.value = _currentValue;
+        _slider.value = _currentValue;  
     }
 
     private void OnEnable()
     {
         _slider.onValueChanged.AddListener(OnSliderChanged);
         _inputField.onEndEdit.AddListener(OnInputChanged);
+    }
+
+    private void Start()
+    {
+        ValueChange?.Invoke(_currentValue);
+    }
+
+    public void ExternalChange(int value)
+    {
+        UpdateValue(value);
     }
 
     private void OnSliderChanged(float value)
@@ -47,15 +57,20 @@ public class NumericInput : MonoBehaviour
         try
         {
             int intValue = int.Parse(value);
-            _currentValue = ConstrainValue(intValue, _minValue, _maxValue);
-            _slider.value = _currentValue;
-            _inputField.text = _currentValue.ToString();
-            ValueChange?.Invoke(_currentValue);
+            UpdateValue(intValue);
         }
         catch (FormatException e)
         {
             _inputField.text = _currentValue.ToString();
         }
+    }
+
+    private void UpdateValue(int intValue)
+    {
+        _currentValue = ConstrainValue(intValue, _minValue, _maxValue);
+        _slider.value = _currentValue;
+        _inputField.text = _currentValue.ToString();
+        ValueChange?.Invoke(_currentValue);
     }
 
     private int ConstrainValue(int value, int min, int max)

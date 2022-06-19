@@ -25,4 +25,9 @@ public class DropSelection : MonoBehaviour
         _currentSelection = itemIndex;
         ValueChange?.Invoke(_currentSelection);
     }
+
+    public void ExternalSelection(int itemIndex)
+    {
+        _dropdown.value = itemIndex;
+    }
 }
