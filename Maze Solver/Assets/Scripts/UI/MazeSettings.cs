@@ -14,6 +14,7 @@ public class MazeSettings : MonoBehaviour
     [SerializeField] private RadialGroupSelection _difficultySelector;
     [SerializeField] private IndicatorPanel _featurePanel;
     [SerializeField] private Button _acceptButton;
+    [SerializeField] private Button _quitButton;
 
     private int _mazeWidth;
     private int _mazeHeight;
@@ -62,6 +63,7 @@ public class MazeSettings : MonoBehaviour
         _algorithmSelector.ValueChange += OnAlgorithmChange;
         _difficultySelector.ValueChange += OnDifficultyChange;
         _acceptButton.onClick.AddListener(OnAccept);
+        _quitButton.onClick.AddListener(Application.Quit);
     }
 
     private void OnDisable()
@@ -72,6 +74,7 @@ public class MazeSettings : MonoBehaviour
         _algorithmSelector.ValueChange -= OnAlgorithmChange;
         _difficultySelector.ValueChange -= OnDifficultyChange;
         _acceptButton.onClick.RemoveListener(OnAccept);
+        _quitButton.onClick.RemoveAllListeners();
     }
 
     private void Start()
