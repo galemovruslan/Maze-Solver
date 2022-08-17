@@ -9,6 +9,7 @@ public static class DataSerializer
 {
 
     private static readonly string FileName = "data";
+    private static readonly string MazeDataTag = "MazeData";
 
     public static void WriteTestData()
     {
@@ -23,34 +24,17 @@ public static class DataSerializer
 
     public static void Write<T>(string path, T data)
     {
-
-        using (var writer = new StreamWriter(new FileStream(path, FileMode.Create)))
-        {
-            var jsomText = JsonUtility.ToJson(data);
-            writer.Write(jsomText);
-        }
+        PlayerPrefs.SetString(MazeDataTag, JsonUtility.ToJson(data));
     }
 
     public static T Read<T>(string fileName)
     {
         T returnedObject;
 
-        using (var reader = new StreamReader(new FileStream(fileName, FileMode.Open)))
-        {
-            var readData = reader.ReadToEnd();
-            returnedObject = JsonUtility.FromJson<T>(readData);
-        }
+        var readData = PlayerPrefs.GetString(MazeDataTag);
+        returnedObject = JsonUtility.FromJson<T>(readData);
 
         return returnedObject;
-    }
-
-
-    private struct TestStruct
-    {
-        public int INT;
-        public float FLOAT;
-        public bool BOOL;
-
     }
 
 }

@@ -30,7 +30,6 @@ public class PlayerFSM : IMovementFSM
         _currentState = newState;
         string stateName = _currentState.StateName;
         OnStateChange?.Invoke(stateName);
-        Debug.Log(stateName);
     }
 
     public void Tick()
